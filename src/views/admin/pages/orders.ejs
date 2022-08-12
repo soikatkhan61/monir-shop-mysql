@@ -1,0 +1,169 @@
+<%- include('../partials/header.ejs') %>
+
+
+    <%- include('../partials/sidebar.ejs') %>
+
+        <div class="container-fluid">
+            <div class="container py-5">
+                <h3 class="text-center text-danger fw-bold">Pending Orders: <%= pending.length %></h3>
+                <hr class="mb-5">
+                <% if(pending.length==0) {%>
+                    <h4 class="text-center text-danger">No pending ordres available </h4>
+                    <% }else{%>
+                        <div class="table-responsive">
+                        <table class="table table-responsive align-middle mb-0 bg-white table-bordered">
+                            <thead class="bg-light table-dark">
+                                <tr>
+                                    <th>Customer Info</th>
+                                    <th>Product Name</th>
+                                    <th>Date</th>
+                                    <th>Product Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-striped">
+
+                                <% for (let order of pending){ %>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt=""
+                                                    style="width: 45px; height: 45px" class="rounded-circle" />
+                                                <div class="ms-3">
+                                                    <p class="fw-bold mb-1">
+                                                        <%= order.customer_name %>
+                                                    </p>
+                                                    <p class="text-muted mb-0">
+                                                        <%= order.phone %>
+                                                    </p>
+                                                    <p class="text-muted mb-0">
+                                                        <%= order.email %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="fw-normal mb-1">
+                                                <%= order.product_name %>
+                                            </p>
+                                        </td>
+
+                                        <td>
+                                            <%= moment(order.createdAt) %>
+                                        </td>
+
+                                        <td class="fw-bold">
+                                            <%= order.product_price %> TK
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="badge <%= order.status == 'success' ? 'badge-success' : 'badge-danger'  %>  rounded-pill d-inline">
+                                                <%= order.status %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <% if(order.status=="pending" ){ %>
+                                                <a href="/order/confirm/<%= order._id %>"
+                                                    class="btn btn-sm btn-success">Confirm</a>
+                                                <% }else{ %>
+                                                    <span>Confirmd</span>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                            </tbody>
+                        </table>
+                        </div>
+                        <% }%>
+
+
+            </div>
+
+            <!--Successd order--> 
+            <div class="container py-5">
+                <h3 class="text-center text-success fw-bold">Completed Orders: <%= success.length %> </h3>
+                <hr class="mb-5">
+                <% if(success.length==0) {%>
+                    <h4 class="text-center text-danger">No data available right now</h4>
+                    <% }else{%>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0 bg-white table-bordered border-muted">
+                                <thead class="bg-light table-dark">
+                                    <tr>
+                                        <th>Customer Info</th>
+                                        <th>Product Name</th>
+                                        <th>Date</th>
+                                        <th>Product Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-striped table-hover">
+                                    <% for (let i= 0; i <orders.length ; i++){ %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://mdbootstrap.com/img/new/avatars/8.jpg" alt=""
+                                                        style="width: 45px; height: 45px" class="rounded-circle" />
+                                                    <div class="ms-3">
+                                                        <p class="fw-bold mb-1">
+                                                            <%= orders[i].customer_name %>
+                                                        </p>
+                                                        <p class="text-muted mb-0">
+                                                            <%= orders[i].phone %>
+                                                        </p>
+                                                        <p class="text-muted mb-0">
+                                                            <%= orders[i].email %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="fw-normal mb-1">
+                                                    <%= orders[i].product_name %>
+                                                </p>
+                                            </td>
+    
+                                            <td>
+                                                <%= moment(orders[i].createdAt) %>
+                                            </td>
+    
+                                            <td class="fw-bold">
+                                                <%= orders[i].product_price %> TK
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="badge <%= orders[i].status == 'success' ? 'badge-success' : 'badge-danger'  %>  rounded-pill d-inline">
+                                                    <%= orders[i].status %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <% if(orders[i].status=="pending" ){ %>
+                                                    <a href="/order/confirm/<%= orders[i]._id %>"
+                                                        class="btn btn-sm btn-success">Confirm</a>
+                                                    <% }else{ %>
+                                                        <span style="font-style: italic;">Confirmed</span>
+                                                        <% } %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+    
+                                </tbody>
+                            </table>
+                        </div>
+                       
+                        <% }%>
+
+                     
+
+            </div>
+        </div>
+
+
+        <%- include('../partials/footer.ejs') %>
+
+            </body>
+
+            </html>

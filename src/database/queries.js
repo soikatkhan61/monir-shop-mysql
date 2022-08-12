@@ -23,6 +23,14 @@ const findUserByEmail = `
 SELECT * FROM users WHERE email = ?
 `;
 
+const createdCategory = `create table IF NOT EXISTS categories (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	category_name VARCHAR(30) NOT NULL,
+	products int(6) NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`
+
+const createProductTable = `create table  if not exists products  (id  INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,product_name varchar(200) ,slug varchar(200),category varchar(40),old_price int(6),new_price int(6),product_desc varchar(1000),product_image varchar (300),total_sales int(6),createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`
+
 module.exports = {
     createDB,
     dropDB,

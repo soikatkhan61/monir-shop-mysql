@@ -2,8 +2,15 @@ const User = require('../models/user.model');
 const { hash: hashPassword, compare: comparePassword } = require('../utils/password');
 const { generate: generateToken } = require('../utils/token');
 
+exports.renderSignUp = (req,res,next) =>{
+    console.log(req.session)
+    res.render("pages/auth/sign-up",{flashMessage:""})
+}
+
 exports.signup = (req, res) => {
-    const { firstname, lastname, email, password } = req.body;
+
+    const { firstname, lastname, email, password,c_password } = req.body;
+
     const hashedPassword = hashPassword(password.trim());
 
     const user = new User(firstname.trim(), lastname.trim(), email.trim(), hashedPassword);
@@ -27,7 +34,13 @@ exports.signup = (req, res) => {
     });
 };
 
+exports.renderSignIn = (req,res,next) =>{
+  
+    res.render("pages/auth/signin",{flashMessage:""})
+}
+
 exports.signin = (req, res) => {
+   
     const { email, password } = req.body;
     User.findByEmail(email.trim(), (err, data) => {
         if (err) {
@@ -46,18 +59,21 @@ exports.signin = (req, res) => {
         }
         if (data) {
             if (comparePassword(password.trim(), data.password)) {
+
                 const token = generateToken(data.id);
-                res.status(200).send({
-                    status: 'success',
-                    data: {
-                        token,
-                        firstname: data.firstname,
-                        lastname: data.lastname,
-                        email: data.email
-                    }
-                });
-                return;
+              
+                req.session.isLoggedIn = true
+                req.session.email = data.email
+                req.session.user = data
+                req.session.save(err=>{
+                     if(err){
+                         console.log(err)
+                         return next(err)
+                     }
+                    })
+               return res.redirect("/dashboard")
             }
+
             res.status(401).send({
                 status: 'error',
                 message: 'Incorrect password'
@@ -65,4 +81,13 @@ exports.signin = (req, res) => {
         }
     });
 
+}
+
+exports.logoutController = (req,res,next) =>{
+    req.session.destroy(err =>{
+        if(err){
+            return next(err)
+        }
+        return res.redirect('/auth/login')
+    })
 }

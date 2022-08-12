@@ -1,8 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const path = require('path')
+const session = require('express-session')
 
 const authRoute = require('./routes/auth.route');
+//import middleware
+const setMiddleware = require("./middlewares/middleware")
+//import route
+const setRoutes = require("./routes/routes")
 
 const { httpLogStream } = require('./utils/logger');
 
@@ -14,23 +20,23 @@ app.use(morgan('dev'));
 app.use(morgan('combined', { stream: httpLogStream }));
 app.use(cors());
 
-app.use('/api/auth', authRoute);
+//setup view engine
+app.set('view engine' ,'ejs')
+app.set('views', path.join(__dirname,'views'))
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-    res.status(200).send({
-        status: "success",
-        data: {
-            message: "API working fine"
-        }
-    });
-});
+
+
+
+setMiddleware(app)
+
+//set the routes from routes directory
+setRoutes(app)
+
 
 app.use((err, req, res, next) => {
-    res.status(err.statusCode || 500).send({
-        status: "error",
-        message: err.message
-    });
-    next();
+    res.send(err)
+   console.log(err)
 });
 
 module.exports = app;
